@@ -67,7 +67,9 @@ class Things5 {
 		// Things5 general purpose methods --------------------------------------
 		void createMessage(unsigned long long timestamp);
 		void createMessage(void);
+		void deleteMessage(void);
 		String getPayload(void);
+		bool isEmptyMessage(void);
 };
 
 #endif  /* THINGS5_H_ */

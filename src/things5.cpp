@@ -192,10 +192,19 @@ void Things5::createMessage(void) {
 	_building_msg = true;
 }
 
+void Things5::deleteMessage(void) {
+	_building_msg = false;
+	doc.clear();
+}
+
 String Things5::getPayload(void) {
 	String payload;
 	serializeJson(_doc, payload);
 	_doc.clear();
 	_building_msg = false;
 	return payload;
+}
+
+bool Things5::isEmptyMessage(void) {
+	return (_doc.containsKey("metrics") || _doc.containsKey("states") || _doc.containsKey("events"))
 }
