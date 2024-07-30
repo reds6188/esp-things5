@@ -206,16 +206,16 @@ void Things5::initStates(unsigned long long timestamp) {
 	if(_doc.containsKey("states"))
 		return;
 
-	JsonArray states = doc.createNestedArray("states");
+	JsonArray states = _doc.createNestedArray("states");
 	JsonObject states_0 = states.createNestedObject();
-	if(timestamp_enabled)
+	if(_timestamp_enabled)
 		states_0["timestamp"] = timestamp;
 }
 
 // Update state [label] with string [value] -----------------------------------
 // return "true" if value has changed -----------------------------------------
 bool Things5::updateState(const char * label, const char * value) {
-	updateState(String(value));
+	updateState(label, String(value));
 }
 
 // Update state [label] with string [value] -----------------------------------
@@ -302,4 +302,28 @@ String Things5::getPayload(void) {
 
 bool Things5::isEmptyMessage(void) {
 	return !(_doc.containsKey("metrics") || _doc.containsKey("states") || _doc.containsKey("events"));
+}
+
+void Things5::printVarList(void) {
+	console.header(HASH, LOG_GREN, 80, "THINGS5 VARIABLE LIST");
+	for(uint8_t i=0 ; i<num_metrics_int ; i++) {
+		String label = metrics_int[i].label;
+		int value = metrics_int[i].value;
+		console.info(T5_T, "[METRICS] Label = \"" + label + "\" ; Value = " + String(value) + " ; Type = INTEGER");
+	}
+	for(uint8_t i=0 ; i<num_metrics_flt ; i++) {
+		String label = metrics_flt[i].label;
+		int value = metrics_flt[i].value;
+		console.info(T5_T, "[METRICS] Label = \"" + label + "\" ; Value = " + String(value) + " ; Type = FLOAT");
+	}
+	for(uint8_t i=0 ; i<num_states ; i++) {
+		String label = states[i].label;
+		String value = states[i].value;
+		console.info(T5_T, "[STATES] Label = \"" + label + "\" ; Value = " + String(value));
+	}
+	for(uint8_t i=0 ; i<num_events ; i++) {
+		String label = events[i].label;
+		bool value = events[i].value;
+		console.info(T5_T, "[EVENTS] Label = \"" + label + "\" ; Value = " + String(value));
+	}
 }

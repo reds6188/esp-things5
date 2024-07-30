@@ -80,6 +80,7 @@ class Things5 {
 		void deleteMessage(void);
 		String getPayload(void);
 		bool isEmptyMessage(void);
+		void printVarList(void);
 };
 
 #endif  /* THINGS5_H_ */
