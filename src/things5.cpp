@@ -175,6 +175,19 @@ void Things5::addMetric(String label, float value) {
 	metrics_0_data.add(obj);
 	obj.clear();
 }
+//=================================================================================================
+//====================================   THINGS5 LOG METHODS   ====================================
+//=================================================================================================
+
+void Things5::initLogs(void) {
+  JsonArray logs = _doc.createNestedArray("logs");
+}
+
+void Things5::addLog(unsigned long long timestamp, String log_line) {
+    JsonArray log = _doc["logs"].createNestedArray();
+    log.add(String(timestamp));
+    log.add(log_line);
+}
 
 //=================================================================================================
 //==============================   THINGS5 GENERAL PURPOSE METHODS   ==============================
@@ -194,7 +207,7 @@ void Things5::createMessage(void) {
 
 void Things5::deleteMessage(void) {
 	_building_msg = false;
-	doc.clear();
+	_doc.clear();
 }
 
 String Things5::getPayload(void) {
@@ -206,5 +219,5 @@ String Things5::getPayload(void) {
 }
 
 bool Things5::isEmptyMessage(void) {
-	return (_doc.containsKey("metrics") || _doc.containsKey("states") || _doc.containsKey("events"))
+	return (_doc.containsKey("metrics") || _doc.containsKey("states") || _doc.containsKey("events"));
 }

@@ -55,7 +55,7 @@ class Things5 {
 		Things5(bool timestamp_en = false);
 		void setUUID(void);
 		void setProperty(String key, String value);
-		// Things5 Metrics methods ----------------------------------------------
+		// Things5 Metrics methods --------------------------------------------
 		void defMetric(const char * label, metrics_t type);
 		int8_t findMetric(const char * label, metrics_t type);
 		void initMetrics(unsigned long long timestamp);
@@ -64,7 +64,10 @@ class Things5 {
 		void addMetric(String label, int32_t value);
 		void addMetric(String label, uint32_t value);
 		void addMetric(String label, float value);
-		// Things5 general purpose methods --------------------------------------
+		// Things5 Logs methods -----------------------------------------------
+		void initLogs(void);
+		void addLog(unsigned long long timestamp, String log_line);
+		// Things5 general purpose methods ------------------------------------
 		void createMessage(unsigned long long timestamp);
 		void createMessage(void);
 		void deleteMessage(void);
