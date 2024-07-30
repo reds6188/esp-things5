@@ -64,6 +64,13 @@ class Things5 {
 		void addMetric(String label, int32_t value);
 		void addMetric(String label, uint32_t value);
 		void addMetric(String label, float value);
+		// Things5 States methods ---------------------------------------------
+		void defState(const char * label);
+		int8_t findState(const char * label);
+		void initStates(unsigned long long timestamp);
+		bool updateState(const char * label, const char * value);
+		bool updateState(const char * label, String value);
+		void addState(String label, String value);
 		// Things5 Logs methods -----------------------------------------------
 		void initLogs(void);
 		void addLog(unsigned long long timestamp, String log_line);

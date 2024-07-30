@@ -175,6 +175,88 @@ void Things5::addMetric(String label, float value) {
 	metrics_0_data.add(obj);
 	obj.clear();
 }
+
+//=================================================================================================
+//===================================   THINGS5 STATE METHODS   ===================================
+//=================================================================================================
+
+// Define a new state [label] -------------------------------------------------
+void Things5::defState(const char * label) {
+	if(num_states < T5_MAX_NUM_VAR) {
+		strcpy(states[num_states].label, label);
+		states[num_states].value = "";
+		num_states++;
+	}
+}
+
+// Return the index of the state [label] --------------------------------------
+// return -1 if the state doesn't exists --------------------------------------
+int8_t Things5::findState(const char * label) {
+	int8_t index = -1;
+	for(uint8_t i=0 ; i<num_states ; i++) {
+		if(!strcmp(states[i].label, label)) {
+			index = i;
+			break;
+		}
+	}
+	return index;
+}
+
+void Things5::initStates(unsigned long long timestamp) {
+	if(_doc.containsKey("states"))
+		return;
+
+	JsonArray states = doc.createNestedArray("states");
+	JsonObject states_0 = states.createNestedObject();
+	if(timestamp_enabled)
+		states_0["timestamp"] = timestamp;
+}
+
+// Update state [label] with string [value] -----------------------------------
+// return "true" if value has changed -----------------------------------------
+bool Things5::updateState(const char * label, const char * value) {
+	updateState(String(value));
+}
+
+// Update state [label] with string [value] -----------------------------------
+// return "true" if value has changed -----------------------------------------
+bool Things5::updateState(const char * label, String value) {
+	int8_t index = findState(label);
+	if(index > -1) {
+		if(states[index].value != value) {
+			states[index].value = value;
+			#ifdef LOG_DEBUG_T5
+			console.log(T5_T, "State \"" + String(label) + "\" has changed");
+			#endif
+			if(_building_msg) {
+				initMetrics(_timestamp);
+				addState(String(label), value);
+			}
+			return true;
+		}
+		return false;
+	}
+	#ifdef LOG_DEBUG_T5
+	console.error(T5_T, "State not found");
+	#endif
+	return false;
+}
+
+// Add state [label] with [value] -----------------------------------
+void Things5::addState(String label, String value) {
+	JsonArray states_0_data;
+	if(_doc["states"][0]["data"].isNull())
+		states_0_data = _doc["states"][0].createNestedArray("data");
+	else
+		states_0_data = _doc["states"][0]["data"];
+
+	StaticJsonDocument<64> obj;
+	obj["name"] = label;
+	obj["value"] = String(value);
+	states_0_data.add(obj);
+	obj.clear();
+}
+
 //=================================================================================================
 //====================================   THINGS5 LOG METHODS   ====================================
 //=================================================================================================
