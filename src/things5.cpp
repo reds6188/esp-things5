@@ -5,6 +5,15 @@ Things5::Things5(bool timestamp_en) {
 	_doc.clear();
 }
 
+void Things5::setUUID(void) {
+	// Generating UUID v4
+	uint8_t uuid_array[16];
+	ESPRandom::uuid4(uuid_array);
+
+	doc.clear();    // Clear document
+	doc["request_id"] = ESPRandom::uuidToString(uuid_array);
+}
+
 void Things5::setProperty(String key, String value) {
 	doc[key] = value;
 }

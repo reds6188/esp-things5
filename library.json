@@ -23,6 +23,10 @@
 		{
 			"name": "ArduinoJson",
 			"version": "bblanchon/ArduinoJson@^6.21.2"
+		},
+		{
+			"name": "ESPRandom",
+			"version": "mulmer89/ESPRandom@^1.5.0"
 		}
 	]
 }

@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <ESPRandom.h>
 #include <console.h>
 
 #define T5_T 				"T5"
@@ -52,6 +53,7 @@ class Things5 {
 		bool _building_msg;
 	public:
 		Things5(bool timestamp_en = false);
+		void setUUID(void);
 		void setProperty(String key, String value);
 		// Things5 Metrics methods ------------------------------------------------------
 		void defMetric(const char * label, metrics_t type);
