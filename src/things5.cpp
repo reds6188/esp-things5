@@ -10,12 +10,12 @@ void Things5::setUUID(void) {
 	uint8_t uuid_array[16];
 	ESPRandom::uuid4(uuid_array);
 
-	doc.clear();    // Clear document
-	doc["request_id"] = ESPRandom::uuidToString(uuid_array);
+	_doc.clear();    // Clear document
+	_doc["request_id"] = ESPRandom::uuidToString(uuid_array);
 }
 
 void Things5::setProperty(String key, String value) {
-	doc[key] = value;
+	_doc[key] = value;
 }
 
 //=================================================================================================
@@ -72,14 +72,14 @@ int8_t Things5::findMetric(const char * label, metrics_t type) {
 }
 
 // Initialize metrics object --------------------------------------------------
-void Things5::initMetrics(unsigned long long time_stamp) {
-	if(doc.containsKey("metrics"))
+void Things5::initMetrics(unsigned long long timestamp) {
+	if(_doc.containsKey("metrics"))
 		return;
 
-    JsonArray metrics = doc.createNestedArray("metrics");
+    JsonArray metrics = _doc.createNestedArray("metrics");
     JsonObject metrics_0 = metrics.createNestedObject();
     if(_timestamp_enabled)
-        metrics_0["timestamp"] = time_stamp;
+        metrics_0["timestamp"] = timestamp;
 }
 
 // Update metric [label] with integer [value] ---------------------------------
@@ -93,7 +93,7 @@ bool Things5::updateMetric(const char * label, int32_t value) {
 			console.log(T5_T, "Metric \"" + String(label) + "\" has changed");
 			#endif
 			if(_building_msg) {
-				initMetrics(timestamp);
+				initMetrics(_timestamp);
 				addMetric(String(label), value);
 			}
 			return true;
@@ -118,7 +118,7 @@ bool Things5::updateMetric(const char * label, float value) {
 			console.log(T5_T, "Metric \"" + String(label) + "\" has changed: " + String(round_value));
 			#endif
 			if(_building_msg) {
-				initMetrics(timestamp);
+				initMetrics(_timestamp);
 				addMetric(String(label), round_value);
 			}
 			return true;
@@ -129,4 +129,73 @@ bool Things5::updateMetric(const char * label, float value) {
     console.error(T5_T, "Metric not found");
     #endif
     return false;
+}
+
+// Add metric [label] with signed integer [value] -----------------------------
+void Things5::addMetric(String label, int32_t value) {
+	JsonArray metrics_0_data;
+	if(_doc["metrics"][0]["data"].isNull())
+		metrics_0_data = _doc["metrics"][0].createNestedArray("data");
+	else
+		metrics_0_data = _doc["metrics"][0]["data"];
+
+	StaticJsonDocument<64> obj;
+	obj["name"] = label;
+	obj["value"] = String(value);
+	metrics_0_data.add(obj);
+	obj.clear();
+}
+
+// Add metric [label] with unsigned integer [value] ---------------------------
+void Things5::addMetric(String label, uint32_t value) {
+	JsonArray metrics_0_data;
+	if(_doc["metrics"][0]["data"].isNull())
+		metrics_0_data = _doc["metrics"][0].createNestedArray("data");
+	else
+		metrics_0_data = _doc["metrics"][0]["data"];
+
+	StaticJsonDocument<64> obj;
+	obj["name"] = label;
+	obj["value"] = String(value);
+	metrics_0_data.add(obj);
+	obj.clear();
+}
+
+// Add metric [label] with float integer [value] ------------------------------
+void Things5::addMetric(String label, float value) {
+	JsonArray metrics_0_data;
+	if(_doc["metrics"][0]["data"].isNull())
+		metrics_0_data = _doc["metrics"][0].createNestedArray("data");
+	else
+		metrics_0_data = _doc["metrics"][0]["data"];
+
+	StaticJsonDocument<64> obj;
+	obj["name"] = label;
+	obj["value"] = String(value);
+	metrics_0_data.add(obj);
+	obj.clear();
+}
+
+//=================================================================================================
+//==============================   THINGS5 GENERAL PURPOSE METHODS   ==============================
+//=================================================================================================
+
+// Create a new Things5 empty message 
+void Things5::createMessage(unsigned long long timestamp) {
+	setUUID();
+	_timestamp = timestamp;
+	_building_msg = true;
+}
+
+void Things5::createMessage(void) {
+	setUUID();
+	_building_msg = true;
+}
+
+String Things5::getPayload(void) {
+	String payload;
+	serializeJson(_doc, payload);
+	_doc.clear();
+	_building_msg = false;
+	return payload;
 }

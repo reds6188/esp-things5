@@ -41,7 +41,7 @@ class Things5 {
 	private:
 		DynamicJsonDocument _doc = DynamicJsonDocument(JSON_SIZE);
 		bool _timestamp_enabled;
-		unsigned long long timestamp;
+		unsigned long long _timestamp;
 		metrics_int_t metrics_int[T5_MAX_NUM_VAR];
 		metrics_flt_t metrics_flt[T5_MAX_NUM_VAR];
 		t5_states_t states[T5_MAX_NUM_VAR];
@@ -55,12 +55,19 @@ class Things5 {
 		Things5(bool timestamp_en = false);
 		void setUUID(void);
 		void setProperty(String key, String value);
-		// Things5 Metrics methods ------------------------------------------------------
+		// Things5 Metrics methods ----------------------------------------------
 		void defMetric(const char * label, metrics_t type);
 		int8_t findMetric(const char * label, metrics_t type);
-		void initMetrics(unsigned long long time_stamp);
+		void initMetrics(unsigned long long timestamp);
 		bool updateMetric(const char * label, int32_t value);
 		bool updateMetric(const char * label, float value);
+		void addMetric(String label, int32_t value);
+		void addMetric(String label, uint32_t value);
+		void addMetric(String label, float value);
+		// Things5 general purpose methods --------------------------------------
+		void createMessage(unsigned long long timestamp);
+		void createMessage(void);
+		String getPayload(void);
 };
 
 #endif  /* THINGS5_H_ */
