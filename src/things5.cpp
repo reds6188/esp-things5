@@ -355,17 +355,35 @@ void Things5::addEvent(String label, String description) {
 }
 
 //=================================================================================================
+//=========================   THINGS5 PARAMETERS CONFIGURATION METHODS   ==========================
+//=================================================================================================
+
+void Things5::addParamToArray(JsonArray arr, const char * name, uint8_t value) {
+	JsonObject obj = arr.createNestedObject();
+	obj["name"] = name;
+	obj["value"] = String(value);
+	obj["type"] = "integer";
+}
+
+void Things5::addParamToArray(JsonArray arr, const char * name, String value) {
+	JsonObject obj = arr.createNestedObject();
+	obj["name"] = name;
+	obj["value"] = value;
+	obj["type"] = "string";
+}
+
+//=================================================================================================
 //==============================   THINGS5 FIRMWARE UPDATE METHODS   ==============================
 //=================================================================================================
 
 void Things5::updateProgress(String uuid, uint8_t progress) {
-	doc["request_id"] = uuid;
-	doc["progress_percentage"] = progress;
+	_doc["request_id"] = uuid;
+	_doc["progress_percentage"] = progress;
 }
 
 void Things5::updateResult(String uuid, bool success) {
-	doc["request_id"] = uuid;
-	doc["success"] = success;
+	_doc["request_id"] = uuid;
+	_doc["success"] = success;
 }
 
 //=================================================================================================

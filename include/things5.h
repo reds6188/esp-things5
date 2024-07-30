@@ -79,6 +79,9 @@ class Things5 {
 		bool updateEvent(const char * label, bool value);
 		void addEvent(String label);
 		void addEvent(String label, String description);
+		// Things5 Parameters Configuration methods ---------------------------
+		void addParamToArray(JsonArray arr, const char * name, uint8_t value);
+		void addParamToArray(JsonArray arr, const char * name, String value);
 		// Things5 Firmware Update methods ------------------------------------
 		void updateProgress(String uuid, uint8_t progress);
 		void updateResult(String uuid, bool success);
