@@ -289,7 +289,7 @@ void Things5::initEvents(unsigned long long timestamp) {
 
 	JsonArray events = _doc.createNestedArray("events");
 	JsonObject events_0 = events.createNestedObject();
-	if(timestamp_enabled)
+	if(_timestamp_enabled)
 		events_0["timestamp"] = timestamp;
 }
 
@@ -352,6 +352,20 @@ void Things5::addEvent(String label, String description) {
 	obj["metadata"]["description"] = description;
 	events_0_data.add(obj);
 	obj.clear();
+}
+
+//=================================================================================================
+//==============================   THINGS5 FIRMWARE UPDATE METHODS   ==============================
+//=================================================================================================
+
+void Things5::updateProgress(String uuid, uint8_t progress) {
+	doc["request_id"] = uuid;
+	doc["progress_percentage"] = progress;
+}
+
+void Things5::updateResult(String uuid, bool success) {
+	doc["request_id"] = uuid;
+	doc["success"] = success;
 }
 
 //=================================================================================================

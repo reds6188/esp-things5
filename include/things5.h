@@ -79,6 +79,9 @@ class Things5 {
 		bool updateEvent(const char * label, bool value);
 		void addEvent(String label);
 		void addEvent(String label, String description);
+		// Things5 Firmware Update methods ------------------------------------
+		void updateProgress(String uuid, uint8_t progress);
+		void updateResult(String uuid, bool success);
 		// Things5 Logs methods -----------------------------------------------
 		void initLogs(void);
 		void addLog(unsigned long long timestamp, String log_line);
