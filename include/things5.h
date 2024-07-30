@@ -2,16 +2,18 @@
 #define THINGS5_H_
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
+#include <console.h>
 
 #define T5_T 				"T5"
 
+#define JSON_SIZE					1024	// JSON maximum size
 #define T5_LABEL_MAX_LENGTH	20		// Label maximum length
-#define T5_MAX_NUM_VAR		8		// Metrics/State/Events array maximum length
+#define T5_MAX_NUM_VAR			8		// Metrics/State/Events array maximum length
 
 typedef enum {
 	METRICS_INT = 0,
 	METRICS_FLT,
-	METRICS_STR
 }metrics_t;
 
 typedef struct {
@@ -36,6 +38,7 @@ typedef struct {
 
 class Things5 {
 	private:
+		DynamicJsonDocument _doc = DynamicJsonDocument(JSON_SIZE);
 		bool _timestamp_enabled;
 		unsigned long long timestamp;
 		metrics_int_t metrics_int[T5_MAX_NUM_VAR];
@@ -46,8 +49,16 @@ class Things5 {
 		uint8_t num_metrics_flt;
 		uint8_t num_states;
 		uint8_t num_events;
+		bool _building_msg;
 	public:
 		Things5(bool timestamp_en = false);
+		void setProperty(String key, String value);
+		// Things5 Metrics methods ------------------------------------------------------
+		void defMetric(const char * label, metrics_t type);
+		int8_t findMetric(const char * label, metrics_t type);
+		void initMetrics(unsigned long long time_stamp);
+		bool updateMetric(const char * label, int32_t value);
+		bool updateMetric(const char * label, float value);
 };
 
 #endif  /* THINGS5_H_ */
