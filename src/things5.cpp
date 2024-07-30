@@ -301,5 +301,5 @@ String Things5::getPayload(void) {
 }
 
 bool Things5::isEmptyMessage(void) {
-	return (_doc.containsKey("metrics") || _doc.containsKey("states") || _doc.containsKey("events"));
+	return !(_doc.containsKey("metrics") || _doc.containsKey("states") || _doc.containsKey("events"));
 }
