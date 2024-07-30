@@ -71,6 +71,14 @@ class Things5 {
 		bool updateState(const char * label, const char * value);
 		bool updateState(const char * label, String value);
 		void addState(String label, String value);
+		// Things5 Events methods ---------------------------------------------
+		void defEvent(const char * label);
+		int8_t findEvent(const char * label);
+		void initEvents(unsigned long long timestamp);
+		void initEvents(void);
+		bool updateEvent(const char * label, bool value);
+		void addEvent(String label);
+		void addEvent(String label, String description);
 		// Things5 Logs methods -----------------------------------------------
 		void initLogs(void);
 		void addLog(unsigned long long timestamp, String log_line);

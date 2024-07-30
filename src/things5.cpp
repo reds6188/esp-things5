@@ -258,6 +258,103 @@ void Things5::addState(String label, String value) {
 }
 
 //=================================================================================================
+//===================================   THINGS5 EVENT METHODS   ===================================
+//=================================================================================================
+
+// Define a new event [label] -------------------------------------------------
+void Things5::defEvent(const char * label) {
+	if(num_events < T5_MAX_NUM_VAR) {
+		strcpy(events[num_events].label, label);
+		states[num_events].value = false;
+		num_events++;
+	}
+}
+
+// Return the index of the event [label] --------------------------------------
+// return -1 if the event doesn't exists --------------------------------------
+int8_t Things5::findEvent(const char * label) {
+	int8_t index = -1;
+	for(uint8_t i=0 ; i<num_events ; i++) {
+		if(!strcmp(events[i].label, label)) {
+			index = i;
+			break;
+		}
+	}
+	return index;
+}
+
+void Things5::initEvents(unsigned long long timestamp) {
+	if(_doc.containsKey("events"))
+		return;
+
+	JsonArray events = _doc.createNestedArray("events");
+	JsonObject events_0 = events.createNestedObject();
+	if(timestamp_enabled)
+		events_0["timestamp"] = timestamp;
+}
+
+void Things5::initEvents(void) {
+	initEvents(_timestamp);
+}
+
+// Update event [label] with boolean [value] ----------------------------------
+// return "true" if value has changed -----------------------------------------
+bool Things5::updateEvent(const char * label, bool value) {
+	int8_t index = findEvent(label);
+	if(index > -1) {
+		if(events[index].value != value) {
+			events[index].value = value;
+			if(events[index].value) {
+				#ifdef LOG_DEBUG_T5
+				console.log(T5_T, "Event \"" + String(label) + "\" has triggered");
+				#endif
+				if(_building_msg) {
+					initEvents(_timestamp);
+					addEvent(String(label));
+				}
+			}
+			else
+				console.log(T5_T, "Event \"" + String(label) + "\" has reset");
+			return true;
+		}
+		return false;
+	}
+	#ifdef LOG_DEBUG_T5
+	console.error(T5_T, "Event not found");
+	#endif
+	return false;
+}
+
+// Add event [label] ----------------------------------------------------------
+void Things5::addEvent(String label) {
+	JsonArray events_0_data;
+	if(_doc["events"][0]["data"].isNull())
+		events_0_data = _doc["events"][0].createNestedArray("data");
+	else
+		events_0_data = _doc["events"][0]["data"];
+
+	StaticJsonDocument<64> obj;
+	obj["name"] = label;
+	events_0_data.add(obj);
+	obj.clear();
+}
+
+// Add event [label] with metadata [description] ------------------------------
+void Things5::addEvent(String label, String description) {
+	JsonArray events_0_data;
+	if(_doc["events"][0]["data"].isNull())
+		events_0_data = _doc["events"][0].createNestedArray("data");
+	else
+		events_0_data = _doc["events"][0]["data"];
+
+	StaticJsonDocument<192> obj;
+	obj["name"] = label;
+	obj["metadata"]["description"] = description;
+	events_0_data.add(obj);
+	obj.clear();
+}
+
+//=================================================================================================
 //====================================   THINGS5 LOG METHODS   ====================================
 //=================================================================================================
 
