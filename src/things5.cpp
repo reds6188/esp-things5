@@ -5,6 +5,10 @@ Things5::Things5(bool timestamp_en) {
 	_doc.clear();
 }
 
+void Things5::enableTimestamp(bool enable) {
+	_timestamp_enabled = enable;
+}
+
 void Things5::setUUID(void) {
 	// Generating UUID v4
 	uint8_t uuid_array[16];
@@ -215,7 +219,7 @@ void Things5::initStates(unsigned long long timestamp) {
 // Update state [label] with string [value] -----------------------------------
 // return "true" if value has changed -----------------------------------------
 bool Things5::updateState(const char * label, const char * value) {
-	updateState(label, String(value));
+	return updateState(label, String(value));
 }
 
 // Update state [label] with string [value] -----------------------------------
